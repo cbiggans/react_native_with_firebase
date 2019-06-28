@@ -8,6 +8,32 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
+import firebase from 'react-native-firebase'
+
+class FirebaseService {
+  constructor() {
+    this.ref = firebase.firestore().collection('marks')
+  }
+  async load(id) {
+    const doc = await this.ref.doc(id).get()
+    if (doc.exists) {
+      console.log('================================================')
+      console.log(doc.data())
+      console.log('================================================')
+
+      return doc.data()
+    } else {
+      const defaultDoc = {
+        name: "ABC",
+        age: 2
+      }   
+      await this.ref.doc(id).set(defaultDoc)
+      return doc 
+    }   
+  }
+}
+export const firebaseService = new FirebaseService()
+
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -19,6 +45,8 @@ const instructions = Platform.select({
 type Props = {};
 export default class App extends Component<Props> {
   render() {
+		firebaseService.load('0k1adnhqyG6qTzJeBCZw')
+
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>Welcome to React Native!</Text>
